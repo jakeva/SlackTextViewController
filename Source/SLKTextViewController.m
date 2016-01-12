@@ -975,6 +975,13 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                 keyboardView.frame = originalFrame;
             }
             
+            // Because the keyboard is on its own view hierarchy since iOS 9,
+            // we instead show a snapshot of the keyboard and hide it
+            // to give the illusion that the keyboard is being moved by the user.
+            if (SLK_IS_IOS9_AND_HIGHER) {
+                [self.textInputbar showKeyboardMockup:YES];
+            }
+            
             break;
         }
         case UIGestureRecognizerStateChanged: {
@@ -1041,6 +1048,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         case UIGestureRecognizerStateFailed: {
             
             if (!dragging) {
+                if (SLK_IS_IOS9_AND_HIGHER) {
+                    [self.textInputbar showKeyboardMockup:NO];
+                }
+                
                 break;
             }
             
@@ -1082,6 +1093,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                                  presenting = NO;
                                  
                                  self.movingKeyboard = NO;
+                                 
+                                 if (SLK_IS_IOS9_AND_HIGHER) {
+                                     [self.textInputbar showKeyboardMockup:NO];
+                                 }
                              }];
             
             break;
